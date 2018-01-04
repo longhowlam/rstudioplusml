@@ -9,7 +9,7 @@ ENV PATH /usr/lib/rstudio-server/bin/:$PATH
 
 ## Download and install RStudio server & dependencies
 ## Attempts to get detect latest version, otherwise falls back to version given in $VER
-## Symlink pandoc, pandoc-citeproc so they are available system-wide
+
 RUN echo deb http://ftp.de.debian.org/debian jessie main >> /etc/apt/sources.list && apt-get update \
   && apt-get install -y --no-install-recommends \
     file \
@@ -28,14 +28,15 @@ RUN echo deb http://ftp.de.debian.org/debian jessie main >> /etc/apt/sources.lis
     libfreetype6-dev \
     libzmq3-dev \
     pkg-config \
-        python \
-        python-dev \
-        rsync \
-        software-properties-common \
-        unzip \
-        ca-certificates \
-        vim \
-        cmake \ 
+    python \
+    python-dev \
+    rsync \
+    software-properties-common \
+    unzip \
+    ca-certificates \
+    vim \
+    cmake \ 
+
   && RSTUDIO_LATEST=$(wget --no-check-certificate -qO- https://s3.amazonaws.com/rstudio-server/current.ver) \
   && [ -z "$RSTUDIO_VERSION" ] && RSTUDIO_VERSION=$RSTUDIO_LATEST || true \
   && wget -q http://download2.rstudio.org/rstudio-server-${RSTUDIO_VERSION}-amd64.deb \
@@ -72,7 +73,6 @@ RUN echo deb http://ftp.de.debian.org/debian jessie main >> /etc/apt/sources.lis
 
 ##### Python stuff ###################################################################
 
-
 RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     python get-pip.py && \
     rm get-pip.py
@@ -90,6 +90,17 @@ RUN pip --no-cache-dir install \
 
 RUN apt-get update && apt-get -y install  python-virtualenv
 
+run apt-get install -y python3-pip
+RUN python3 -m pip install ipykernel
+RUN python3 -m ipykernel install --user
+
+###### tensorflow ################################################################
+RUN pip --no-cache-dir install --upgrade tensorflow
+RUN pip --no-cache-dir install --upgrade keras
+RUN pip3 --no-cache-dir install --upgrade tensorflow
+RUN pip3 --no-cache-dir install --upgrade keras
+
+
 ###### Install Java for h2o ###########################################################
 RUN  apt-get update &&  apt-get -y install default-jdk
 
@@ -102,8 +113,15 @@ RUN R -e "install.packages('glmnet', repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('plotly', repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('xgboost', repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('text2vec', repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('devtools', repos='http://cran.rstudio.com/')"
+
+RUN R -e "install.packages(c('ggvis', 'leaflet', 'visNetwork', 'sunburstR', 'rgeos', 'raster', 'sp', 'colorRamps', 'RColorBrewer'), repos='http://cran.rstudio.com/')"
+
+RUN R -e "devtools::install_github('IRkernel/IRkernel')"
+RUN R -e "IRkernel::installspec()"
 
 COPY userconf.sh /etc/cont-init.d/conf
+
 EXPOSE 8787 8888 54321
 
 CMD ["/init"]
