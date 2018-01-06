@@ -94,14 +94,17 @@ run apt-get install -y python3-pip
 RUN python3 -m pip install ipykernel
 RUN python3 -m ipykernel install --user
 
-###### tensorflow ################################################################
+###### tensorflow #########################################################################
 RUN pip --no-cache-dir install --upgrade tensorflow
 RUN pip --no-cache-dir install --upgrade keras
 RUN pip3 --no-cache-dir install --upgrade tensorflow
 RUN pip3 --no-cache-dir install --upgrade keras
 
+###### pytorch ############################################################################
+RUN pip3 install http://download.pytorch.org/whl/cu80/torch-0.3.0.post4-cp36-cp36m-linux_x86_64.whl 
+RUN pip3 install torchvision
 
-###### Install Java for h2o ###########################################################
+###### Install Java for h2o ###############################################################
 RUN  apt-get update &&  apt-get -y install default-jdk
 
 ###### Additional R packages    ###########################################################
@@ -115,12 +118,21 @@ RUN R -e "install.packages('xgboost', repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('text2vec', repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('devtools', repos='http://cran.rstudio.com/')"
 
-RUN R -e "install.packages(c('ggvis', 'leaflet', 'visNetwork', 'sunburstR', 'rgeos', 'raster', 'sp', 'colorRamps', 'RColorBrewer'), repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages(c('ggvis', 'leaflet', 'visNetwork', 'sunburstR', 'raster', 'sp', 'colorRamps', 'RColorBrewer'), repos='http://cran.rstudio.com/')"
 
 RUN R -e "devtools::install_github('IRkernel/IRkernel')"
 RUN R -e "IRkernel::installspec()"
 
+
 COPY userconf.sh /etc/cont-init.d/conf
+
+##### get some examples
+
+RUN mkdir /home/examples
+
+COPY mnist_mlp.R /home/examples
+COPY mnist_mlp.py /home/examples
+
 
 EXPOSE 8787 8888 54321
 
