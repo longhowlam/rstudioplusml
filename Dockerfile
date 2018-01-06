@@ -131,7 +131,7 @@ COPY userconf.sh /etc/cont-init.d/conf
 RUN mkdir /home/examples
 
 COPY mnist_mlp.R /home/examples
-COPY mnist_mlp.py /home/examples
+COPY MNIST.ipynb /home/examples
 
 
 EXPOSE 8787 8888 54321
