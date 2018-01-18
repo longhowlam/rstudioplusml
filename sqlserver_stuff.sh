@@ -22,9 +22,28 @@ echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
 echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
 source ~/.bashrc
 
+# ODBC drivers
+sudo su 
+curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+exit
+sudo apt-get update
+sudo ACCEPT_EULA=Y apt-get install msodbcsql
+
+
+
 # using SQLSERVER
 sqlcmd -S localhost -U SA -P 'pp'
+
+CREATE LOGIN longhow WITH PASSWORD = 'longhow_123'
+CREATE USER longhow FOR LOGIN longhow
+
 
 CREATE DATABASE TestDB
 SELECT Name from sys.Databases
 GO
+
+
+
+
+
