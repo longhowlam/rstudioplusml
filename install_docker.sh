@@ -18,3 +18,13 @@ sudo add-apt-repository \
 sudo apt-get update
 
 sudo apt-get install -y docker-ce
+
+
+### pull neo4j as a test
+sudo docker pull neo4j
+
+### shiny docker 
+sudo docker pull rocker/shiny
+
+#### pull rstudio_ml 
+sudo docker pull longhowlam/rstudio_plus_ml

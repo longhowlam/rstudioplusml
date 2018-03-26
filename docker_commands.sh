@@ -34,8 +34,8 @@ sudo docker run -d -p 8787:8787 longhowlam/rstudio_plus_ml
 #you can also expose h2o port and jypyter
 sudo docker run -d -p 8787:8787 -p 54321:54321 -p 8888:8888 longhowlam/rstudio_plus_ml
 
-###shell access
-docker run --rm -it -p 8787:8787 -p 54321:54321 -p 8888:8888 longhowlam/rstudio_plus_ml /bin/bash
+###shell access, use 8786 if you have another rstudio running
+sudo docker run --rm -it -p 8786:8787 -p 54321:54321 -p 8888:8888 longhowlam/rstudio_plus_ml /bin/bash
 #start rstudio
 rstudio-server start
 
